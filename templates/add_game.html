@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="row justify-content-md-center">
+  <div class="col-md-7 col-lg-5">
+    <h2 class="join-message">Add Board Game</h2>
+    <form method="POST" class="gameform" id="user_form">
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden' %}
+        {% for error in field.errors %}
+          <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+        {{ field(placeholder="Search for A Game", class="form-control", id="searchinput") }}
+        <div class="suggestions">
+          <ul></ul>
+        </div>
+      {% endfor %}
+
+      <button class="btn btn-primary btn-lg btn-block">Add Game!</button>
+    </form>
+  </div>
+</div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    {% endblock %}
