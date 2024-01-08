@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-sm-4">
+  <div class="row">
+    <div class="user-detail">
+       <h2> {{user.username}} </h2> 
+       <form method="POST" action="/users/{{user.id}}/follow">
+          <button class ="follow-butn">Follow</button>
+        </form>
+       <img src="{{user.image_url}}" alt ="">
+        
+          <div> <a href = "mailto: {{user.email}}">{{user.email}}</a> </div>
+      </div>
+
+    <div class="user-detail">
+      <h4> {{user.username}}'s games </h4>
+      {% for game in user.boardgames %}  
+              <div class="card-contents">          
+                  <p>{{ game.name }}</p>
+              </div>
+      {% endfor %}
+
+    </div>
+    </div>
+    </div>
+{% endblock %}

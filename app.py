@@ -46,22 +46,6 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-@app.route('/calculate_distance', methods=['POST'])
-def calculate_distance():
-    origin = request.form['origin']
-    destination = request.form['destination']
-    url = f'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={origin}&destinations={destination}&key={api_key}'
-
-    response = requests.get(url)
-    data = response.json()
-
-    try:
-        distance = data['rows'][0]['elements'][0]['distance']['text']
-        return jsonify({'distance': distance})
-    except KeyError:
-        return jsonify({'error': 'Unable to calculate distance'})
-    
-
 
 @app.route('/signup', methods=["GET","POST"])
 def signup():
@@ -76,6 +60,7 @@ def signup():
                 username=form.username.data,
                 password=form.password.data,
                 email=form.email.data,
+                location= form.location.data,
                 image_url=form.image_url.data or  User.image_url.default.arg
             )
             db.session.commit()
@@ -119,15 +104,48 @@ def logout():
     return redirect("/login")
 
 
+
+@app.route("/users/<int:userid>")
+def user_detail(userid):
+    """show user details"""
+    user = User.query.get_or_404(userid)
+    return render_template('userdetail.html', user=user)
+
+
 @app.route("/users/<int:userid>/follow", methods=["POST"])
-def add_follow(userid):
+def toggle_follow(userid):
     """follow user if logged in"""
     if g.user:
         user= g.user
         followed_user = User.query.get_or_404(userid)
-        user.following.append(followed_user)
+        if followed_user in  g.user.following:
+            g.user.following.remove(followed_user)      
+        else:
+            user.following.append(followed_user)  
         db.session.commit()
+    
     return redirect("/")
+
+def calculate_distance(origin, destination):
+        origin_formatted=""
+        destination_formatted =""
+        if (origin):
+            origin_formatted = origin.replace(' ', '+')
+        if (destination):
+            destination_formatted = destination.replace(' ', '+')
+        url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin_formatted}&destinations={destination_formatted}&key={api_key}'
+        response = requests.get(url)
+        data = response.json()
+        try:
+            if data['status'] == "INVALID_REQUEST":
+                return "Unavailable"
+            distancetext = data['rows'][0]['elements'][0]['distance']['text']
+            distanceint = data['rows'][0]['elements'][0]['distance']['value']
+            distance = [distancetext,distanceint]
+            return distance
+        except KeyError:
+            return ['Unknown',999999999]
+
 
 
 @app.route('/users/profile', methods=["GET", "POST"])
@@ -140,15 +158,16 @@ def profile():
             if User.authenticate(user.username, form.password.data):
                 user.username = form.username.data
                 user.email = form.email.data
+                user.location = form.location.data
                 user.image_url = form.image_url.data or "/static/images/default-pic.png"
-                db.sesion.commit()
+                db.session.commit()
                 flash("changes successful")
-                return redirect(f"/users/{user.id}")
+                return redirect("/")
             else:
                 flash("incorrect password")
-                return redirect(f"/users/{user.id}")
+                return redirect("/")
         else:
-            return render_template("/users/edit.html", user = user, form = form)
+            return render_template("/edit.html", user = user, form = form)
     else:
         return('/')
     
@@ -163,7 +182,17 @@ def homepage():
     """
     if g.user:
         following =[f.id for f in g.user.following]
-        return render_template('home.html',users= User.query.all(), following = following)
+        userinfo= []
+        users = User.query.filter(User.id != g.user.id).all()
+        for user in users:
+            distance = calculate_distance(g.user.location, user.location)
+            try:
+                int_distance = int(distance[1])
+            except ValueError:
+                int_distance = 999999999
+            userinfo.append([user, distance[0],int_distance])
+        sorteduserinfo = sorted(userinfo, key=lambda x: x[2])
+        return render_template('home.html',userpairs =  sorteduserinfo, users= users, following = following)
 
     else:
         return render_template('home-anon.html')
@@ -192,7 +221,7 @@ def add_games():
     form = AddGameForm()
     if form.validate_on_submit():
         gamename = form.gamename.data
-        game = BoardGame(name=gamename)
+        game = BoardGame.query.filter_by(name=gamename).first()
         if game is None:
             bgame = BoardGame(name=gamename)
             db.session.add(bgame)
@@ -203,8 +232,8 @@ def add_games():
             if (game not in usergames):
                 g.user.boardgames.append(game)
                 db.session.commit()     
-        return redirect("/")
-    return render_template("/add_game.html", form=form)
+        return redirect("/users/add_games")
+    return render_template("/add_game.html", user= g.user, form=form)
 
 
 @app.route("/users/remove_game/<game_id>", methods=["POST"])
@@ -213,5 +242,5 @@ def remove_game(game_id):
     game = BoardGame.query.get_or_404(game_id)
     g.user.boardgames.remove(game)
     db.session.commit()
-    return redirect("/")
+    return redirect("/users/add_games")
     

@@ -9,6 +9,7 @@ class UserAddForm(FlaskForm):
 
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
+    location = StringField('Location (City, Country)')
     password = PasswordField('Password', validators=[Length(min=6)])
     image_url = StringField('(Optional) Image URL')
 
@@ -26,7 +27,8 @@ class UserEditForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     image_url = StringField("Image URL")
-    password = StringField("Enter Current Password",validators=[Length(min=6)])
+    location = StringField('Location (City, Country)')
+    password = PasswordField("Enter Current Password",validators=[Length(min=6)])
 
 class AddGameForm(FlaskForm):
     """Add Game Form"""

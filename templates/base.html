@@ -19,31 +19,71 @@
 
 <body class="{% block body_class %}{% endblock %}">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <nav id="sidebarMenu"
+  class="collapse d-lg-block sidebar collapse bg-white"
+  >
+<div class="position-sticky">
+ <div class="list-group list-group-flush mx-3 mt-4">
+   <a
+      href="/"
+      class="list-group-item list-group-item-action py-2 ripple"
+      aria-current="true"
+      >
+      <span class="sidebar-title">Board Game Friend Finder</span>
+    </a>
+    {% if g.user %}
+    
+    <div> <h3> {{ g.user.username}}   </h3><img scr = "{{g.user.image_url}}" alt=""></img></div>
+    <a
+    href="/users/add_games"
+    class="list-group-item list-group-item-action py-2 ripple active"
+    ><span>My Games</span>
+    </a>
+    <a
+    href="/users/{{g.user.id}}/following"
+    class="list-group-item list-group-item-action py-2 ripple active"
+    >
+    <span>Favorite Users</span>
+    </a>
+    <a
+    href="/users/profile"
+    class="list-group-item list-group-item-action py-2 ripple active"
+    >
+    <span>Edit profile</span>
+    </a>
+    <a
+    href="/logout"
+    class="list-group-item list-group-item-action py-2 ripple active"
+    >
+    <span>Log Out</span>
+    </a>
+    {% endif %}
+    {% if not g.user %}
+    <a
+    href="/signup"
+    class="list-group-item list-group-item-action py-2 ripple active"
+    >
+    <span>Sign Up</span>
+    </a>
+    <a
+    href="/login"
+    class="list-group-item list-group-item-action py-2 ripple active"
+    >
+    <span>Log in</span>
+    </a>
+    {% endif %}
+    </div>
+  </div>
+</nav>
   <nav class="navbar navbar-expand">
   <div class="container-fluid">
     <div class="navbar-header">
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Board Game Friend Finder</h1>
-           
+          <a class = "title-word" href ="/"> Board Game Friend Finder </a>  
         </div>
     </div>
-
-    </div>
-    <ul class="nav navbar-nav navbar-right">
-      {% if not g.user %}
-      <li><a href="/signup">Sign up</a></li>
-      <li><a href="/login">Log in</a></li>
-      {% else %}
-      <li>
-        <a href="/users/{{ g.user.id }}">
-          <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
-        </a>
-      </li>
-      <li><a href="/messages/new">New Message</a></li>
-      <li><a href="/logout">Log out</a></li>
-      {% endif %}
-    </ul>
+  </div>
   </div>
 </nav>
 <div class="container">

@@ -1,56 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="main-container">
-        <div class="box">
-          <a href="/users/{{ g.user.id }}" class="card-link">
-            <img src="{{ g.user.image_url }}"
-                 alt="{{ g.user.username }}"
-                 class="card-image">
-            <p>{{ g.user.username }}</p>
-          </a>
-          <ul class="user-stats nav nav-pills">
-            <li class="stat">
-              <p class="small">games</p>
-            </li>
-          </ul>
-          <li class="stat">
-            <a href = "users/{{g.user.id}}/following">Followers</a>
-          </li>
-          <a href="/users/add_games"> Add games</btn> </a>
-          <ul>
-            {% for game in g.user.boardgames %}
-                <li>
-                  <form method="POST" action="/users/remove_game/{{game.id}}"> 
-                      <span>
-                          {{game.name}} 
-                          <button > Remove </button>
-                      </span>
-                  </form>  
-                </li>
-            {% endfor %}
-          </ul>  
-        </div>
-      <div>
-        <div id="request">requeeest</div>
-        <div id="result">resposssne</div>
-      </div>
       <div class = "box">
-        <h2> Nearby Players </h2>
-        <ul class="userlist">
-          {% for u in users %}
-            <li>
-              <form method="POST" action="/users/{{ u.id }}/follow" class="messages-like">
-               <span> {{u.username}}  
-               <button class="btn 
-               btn-sm 
-               {{'btn-primary' if u.id in following else 'btn-secondary'}}">
-                Follow
-                </button>
-               </span>
-                
-              </form>
-            </li>
-          {% endfor %}
+        <div class="center-title"> <h2> Nearby Players </h2>  </div>
+        <ul class="list-group">
+          
+            {% for userpair in userpairs %}
+                <div class="list-group-item"> 
+                  <img class="user-img" src="{{userpair[0].image_url}}" alt="">  <span> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
+                    <span class="tab-info">Location : {{userpair[0].location }} ||  </span>
+                       Distance to you: 
+                         <span class="dist-span"> {{userpair[1]}}</span> 
+                      
+
+                </div>
+            {% endfor %}
         </ul>
       </div>       
   </div>

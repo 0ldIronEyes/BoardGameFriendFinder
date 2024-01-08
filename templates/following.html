@@ -3,32 +3,35 @@
   <div class="col-sm-9">
     <div class="row">
 
-      {% for followed_user in user.following %}
+      <div class="following">
+        <h2> {{user.username}} </h2>
+        <h6 class="games"> Your Games </h6>
+        <div class="gamebox">
+        {% for game in user.boardgames %}
+          <div class="card-contents">
+              <p>{{ game.name}}</p>
+          </div>
+         {% endfor %}
+        </div>
+      </div>
 
-        <div class="col-lg-4 col-md-6 col-12">
-          <div class="card user-card">
-            <div class="card-inner">
-              <div class="image-wrapper">
-                <img src="{{ followed_user.header_image_url }}" alt="" class="card-hero">
-              </div>
-              <div class="card-contents">
-                <a href="/users/{{ followed_user.id }}" class="card-link">
-                  <img src="{{ followed_user.image_url }}" alt="Image for {{ followed_user.username }}" class="card-image">
-                  <p>@{{ followed_user.username }}</p>
-                </a>
-                  <form method="POST"
-                        action="/users/stop-following/{{ followed_user.id }}">
-                    <button class="btn btn-primary btn-sm">Unfollow</button>
-                  </form>
-            
-              </div>
-              <p class="card-bio">{{ followed_user.bio }}</p>
+        {% for f in user.following %}
+        <div class="following">
+          <h5> {{f.username}}</h5>
+          <p>  <a href = "mailto: {{f.email}}">{{f.email}}</a> </p>
+          <div> {{f.location }}</div>
+         
+
+            <h6 class="games"> {{f.username}}'s games </h6>
+            <div class="gamebox">
+            {% for game in f.boardgames %}
+            <div>
+              {{ game.name }}
             </div>
+            {% endfor %}
           </div>
         </div>
-
-      {% endfor %}
-
+      {%  endfor %}
     </div>
-  </div>
+  </div>   
 {% endblock %}

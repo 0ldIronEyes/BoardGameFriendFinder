@@ -34,7 +34,7 @@ async function search(str) {
 	for (var i = 0; i < nameElements.length; i++) {
    		var nameElement = nameElements[i];
     	var value = nameElement.getAttribute("value");
-    	if (value.toLowerCase().includes(str.toLowerCase())) {
+    	if (value.toLowerCase().startsWith(str.toLowerCase())) {
         	result.push(value);
     	}
 	}
@@ -58,6 +58,7 @@ function showSuggestions(results) {
 	//button.href = `/users/add_games/${res}`;
     //button.innerText = `${res}`;
 	li.innerText = `${res}`;
+	li.className = "suggestionclass";
 	//li.appendChild(button);
     suggestions.appendChild(li);
    })
