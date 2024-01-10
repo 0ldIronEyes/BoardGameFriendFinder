@@ -36,6 +36,7 @@ def add_user_to_g():
     else:
         g.user = None
 
+
 def do_login(user):
     """log in user"""
 
@@ -126,6 +127,7 @@ def toggle_follow(userid):
     return redirect("/")
 
 def calculate_distance(origin, destination):
+        """calculates distance between two points using google distance api"""
         origin_formatted=""
         destination_formatted =""
         if (origin):

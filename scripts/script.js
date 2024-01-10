@@ -74,8 +74,6 @@ function useSuggestion(ev) {
 }
 
 
-
-
 suggestions.addEventListener('click', useSuggestion);
 
 
