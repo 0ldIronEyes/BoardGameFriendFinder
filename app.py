@@ -123,7 +123,6 @@ def toggle_follow(userid):
         else:
             user.following.append(followed_user)  
         db.session.commit()
-    
     return redirect("/")
 
 def calculate_distance(origin, destination):

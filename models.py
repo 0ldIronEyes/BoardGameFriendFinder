@@ -71,7 +71,7 @@ class User(db.Model):
 
     header_image_url = db.Column(
         db.Text,
-        default="/static/images/warbler-hero.jpg"
+        default="/static/images/nav-bg.png"
     )
 
     bio = db.Column(
@@ -145,6 +145,12 @@ class User(db.Model):
 
         return False
 
+    def get_img_url(self):
+        """Get the user's img_url or default if it doesn't exist"""
+        if (self.image_url):
+            return self.image_url
+        else:
+            return "/static/images/default-pic.png"
 
 def connect_db(app):
     """Connect this database to provided Flask app.

@@ -354,11 +354,13 @@ nav + .container {
   display:flex;
 }
 .tab-info {
-  padding-left: 30px;
+  text-align: right;
 }
 
 .center-title{
   text-align: center;
+  text-decoration: double;
+  padding: 7px 20px 12px;
 }
 #messages {
   position: relative;
@@ -609,13 +611,13 @@ p.card-bio {
   width: 100vw;
   left: 0;
   z-index: -1;
-  background-image: url("/static/images/signed-out-home.jpg");
+  background-image: url("/static/images/bgbkround.webp");
   background-size: cover;
   background-position: center center;
   color: #fff;
   text-align: center;
   padding: 1rem;
-  text-shadow: 0 0 8px #66757f;
+  text-shadow: 0 0 8px #10639b;
 }
 
 .home-space {
@@ -641,7 +643,7 @@ p.card-bio {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.3);
+  
 }
 
 /* ============================== Signed in Home */
@@ -681,6 +683,9 @@ p.card-bio {
   text-align: left;
 }
 
+.right-text {
+  text-align: right;
+}
 .title-word {
   text-decoration: none;
   font-size:36px;

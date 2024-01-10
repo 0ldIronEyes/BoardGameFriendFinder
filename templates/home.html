@@ -7,10 +7,13 @@
           
             {% for userpair in userpairs %}
                 <div class="list-group-item"> 
-                  <img class="user-img" src="{{userpair[0].image_url}}" alt="">  <span> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
-                    <span class="tab-info">Location : {{userpair[0].location }} ||  </span>
-                       Distance to you: 
-                         <span class="dist-span"> {{userpair[1]}}</span> 
+                  <img class="user-img" src="{{userpair[0].get_img_url()}}" alt="">  <span> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
+                  <div class = "right-text">  
+                       <span>Location : {{userpair[0].location }}</span>
+                    
+                        Distance to you: 
+                        <span class="dist-span"> {{userpair[1]}}</span> 
+                      </div>
                       
 
                 </div>
