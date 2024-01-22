@@ -1,13 +1,13 @@
-"""SQLAlchemy models for Warbler."""
-
 from datetime import datetime
-
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 
+app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = 'static'
 bcrypt = Bcrypt()
 db = SQLAlchemy()
-
 
 
 class Follows(db.Model):
@@ -35,16 +35,13 @@ class Ownership(db.Model):
 
 class BoardGame(db.Model):
     """Boardgame in system"""
-    __tablename__= 'boardgames'
+    __tablename__ = 'boardgames'
 
     id = db.Column(db.Integer, primary_key=True)
-
     name = db.Column(db.Text, nullable=False)
-
 
 class User(db.Model):
     """User in the system."""
-
     __tablename__ = 'users'
 
     id = db.Column(
@@ -66,7 +63,7 @@ class User(db.Model):
 
     image_url = db.Column(
         db.Text,
-        default="/static/images/default-pic.png",
+        default="images/default-pic.png",
     )
 
     header_image_url = db.Column(
@@ -100,7 +97,65 @@ class User(db.Model):
         secondaryjoin=(Follows.user_being_followed_id == id)
     )
 
+    def __repr__(self):
+        return f"<User #{self.id}: {self.username}, {self.email}>"
 
+    @classmethod
+    def signup(cls, username, email, password, location, image_url):
+        """Sign up user.
+
+        Hashes password and adds user to the system.
+        """
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+       
+        user = User(
+            username=username,
+            email=email,
+            location=location,
+            password=hashed_pwd,
+            image_url=image_url,
+        )
+
+        db.session.add(user)
+        return user
+
+    @classmethod
+    def authenticate(cls, username, password):
+        """Find user with `username` and `password`.
+       
+        This is a class method (call it on the class, not an individual user.)
+        It searches for a user whose password hash matches this password
+        and, if it finds such a user, returns that user object.
+
+        If can't find matching user (or if password is wrong), returns False.
+        """
+        user = cls.query.filter_by(username=username).first()
+
+        if user:
+            is_auth = bcrypt.check_password_hash(user.password, password)
+            if is_auth:
+                return user
+
+        return False
+
+    def get_img_url(self):
+        """Get the user's img_url or default if it doesn't exist"""
+        if self.image_url != 'none':
+            return url_for('static', filename='default-pic.png')
+        else:
+            return url_for('static', filename='default-pic.png')
+
+def connect_db(app):
+    """Connect this database to the provided Flask app.
+
+    You should call this in your Flask app.
+    """
+    db.app = app
+    db.init_app(app)
+
+if __name__ == "__main__":
+    connect_db(app)
+    app.run()
 
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
@@ -144,13 +199,7 @@ class User(db.Model):
                 return user
 
         return False
-
-    def get_img_url(self):
-        """Get the user's img_url or default if it doesn't exist"""
-        if (self.image_url):
-            return self.image_url
-        else:
-            return "/static/images/default-pic.png"
+    
 
 def connect_db(app):
     """Connect this database to provided Flask app.

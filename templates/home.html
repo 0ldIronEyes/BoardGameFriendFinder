@@ -7,7 +7,13 @@
           
             {% for userpair in userpairs %}
                 <div class="list-group-item"> 
-                  <img class="user-img" src="{{userpair[0].get_img_url()}}" alt="">  <span> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
+                  {% if userpair[0].image_url == 'none'%}
+                  <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
+                  {% else %}
+                  <img class="user-img" src="{{userpair[0].image_url}}" alt="">
+                  {% endif%}
+
+                  <span> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
                   <div class = "right-text">  
                        <span>Location : {{userpair[0].location }}</span>
                       <div>

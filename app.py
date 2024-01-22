@@ -77,6 +77,7 @@ def signup():
     
 
 
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Handle user login."""
@@ -102,7 +103,7 @@ def logout():
     """Handle logout of user."""
     do_logout()
     flash("Sucessfully logged out.")
-    return redirect("/login")
+    return redirect("/")
 
 
 
@@ -245,3 +246,7 @@ def remove_game(game_id):
     db.session.commit()
     return redirect("/users/add_games")
     
+
+@app.route('/static/images/default-pic.png')
+def serve_image(filename):
+    return send_from_directory('static/images', filename)
