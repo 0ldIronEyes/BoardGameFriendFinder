@@ -21,11 +21,11 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 {% if g.user %}
   <nav id="sidebarMenu"
-  class="collapse d-lg-block sidebar collapse bg-white"
+  class="collapse d-lg-block sidebar collapse sidebar-bg"
   >
 
-<div class="position-sticky">
- <div class="list-group list-group-flush mx-3 mt-4">
+<div class="position-sticky ">
+ <div class="list-group-flush mt-4">
    <a
       href="/"
       class="list-group-item list-group-item-action py-2 ripple"
@@ -35,41 +35,41 @@
     </a>
     {% if g.user %}
     
-    <div> <h3> {{ g.user.username}}   </h3><img scr = "{{g.user.image_url}}" alt=""></img></div>
+    <div> <h3 class="sidebar-user"> Welcome,  {{ g.user.username}} </h3> <img scr = "{{g.user.image_url}}" alt=""></img></div>
     <a
     href="/users/add_games"
-    class="list-group-item list-group-item-action py-2 ripple active"
-    ><span>My Games</span>
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
+    ><span class="list-item">My Games</span>
     </a>
     <a
     href="/users/{{g.user.id}}/following"
-    class="list-group-item list-group-item-action py-2 ripple active"
+    class="list-group-item  sidebar-item list-group-item-action py-3 ripple active"
     >
-    <span>Favorite Users</span>
+    <span class="list-item"> Favorite Users</span>
     </a>
     <a
     href="/users/profile"
-    class="list-group-item list-group-item-action py-2 ripple active"
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
     >
-    <span>Edit profile</span>
+    <span class="list-item">Edit profile</span>
     </a>
     <a
     href="/logout"
-    class="list-group-item list-group-item-action py-2 ripple active"
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
     >
-    <span>Log Out</span>
+    <span class="list-item">Log Out</span>
     </a>
     {% endif %}
     {% if not g.user %}
     <a
     href="/signup"
-    class="list-group-item list-group-item-action py-2 ripple active"
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
     >
     <span>Sign Up</span>
     </a>
     <a
     href="/login"
-    class="list-group-item list-group-item-action py-2 ripple active"
+    class="list-group-item  sidebar-item list-group-item-action py-3 ripple active"
     >
     <span>Log in</span>
     </a>
@@ -78,17 +78,7 @@
   </div>
 {% endif %}
 </nav>
-  <nav class="navbar navbar-expand">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <a class = "title-word" href ="/"> Board Game Friend Finder </a>  
-        </div>
-    </div>
-  </div>
-  </div>
-</nav>
+  
 <div class="container">
   {% for category, message in get_flashed_messages(with_categories=True) %}
   <div class="alert alert-{{ category }}">{{ message }}</div>

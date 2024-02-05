@@ -1,9 +1,9 @@
 /* ====================== General */
 
 body {
-  background-color: #6f7579;
-}
+  background-color: #dbcaca;
 
+}
 body.error-404 {
   background-color: #1da1f2;
 }
@@ -27,18 +27,39 @@ body.error-404 {
   top: 0;
   bottom: 0;
   left: 0;
-  padding: 58px 0 0; 
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+; 
   width: 350px;
   z-index: 600;
   align-items: center;
 }
 
-
+.sidebar-bg {
+  background-color: #11232e;
+}
 
 .sidebar-title {
+  text-align: center;
+  padding-top: 40px;
+  color:white;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.sidebar-item:hover {
+  background-color: cadetblue;
+}
+
+.list-group-item {
+  margin-bottom: 1em;
+}
+
+
+.sidebar-user {
+  text-align: center;
+  color:white;
   font-weight: bolder;
   font-size: 2em;
+  padding-top: 100px;
 }
 .sidebar-icon {
   text-align: right;
@@ -48,10 +69,6 @@ body.error-404 {
   .sidebar {
     width: 100%;
   }
-}
-.sidebar .active {
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 }
 
 .sidebar-sticky {
@@ -63,12 +80,16 @@ body.error-404 {
   overflow-y: auto; 
 }
 
+.list-item {
+  font-weight: bold;
+  color: white;
+}
 .list-group-item-action {
   text-align: center;
 }
 
 .navbar a {
-  color: #66757f;
+  color: #11232e;
   font-size: 13px;
   font-weight: bold;
 }
@@ -134,10 +155,16 @@ nav form.navbar-form {
 }
 
 .name-class{
-  font-size: 20px;
+  font-size: 24px;
   padding: 20px;
+
+  font-weight: bold;
 }
 
+.name-class a {
+  text-decoration: none;
+  color: black;
+}
 .next-box{
   margin-top: 60px;
 }
@@ -235,9 +262,6 @@ nav + .container {
   margin-bottom: 1rem;
 }
 
-.list-group-item {
-  margin-bottom:1em;
-}
 /* ===================== User profile */
 
 .join-message {
@@ -346,9 +370,10 @@ nav + .container {
   padding-left: 60px;
 }
 .user-img {
+  padding: 15px;
   border-radius: 50%;
-  width:40px;
-  height:40px;
+  width:100px;
+  height:100px;
 }
 .item-div {
   display:flex;
@@ -357,10 +382,12 @@ nav + .container {
   text-align: right;
 }
 
+
 .center-title{
-  text-align: center;
   text-decoration: double;
-  padding: 7px 20px 12px;
+  padding: 40px 40px 25px 58px;
+  font-weight: bolder;
+  font-size: 36px;
 }
 #messages {
   position: relative;
@@ -448,8 +475,7 @@ background-color: #62676c;
   width: 100%;
   padding:10px;
   border-radius: 0px 0px 5 px 5px;
-  border: 1px solid #ccc;
-  background: white;
+
   margin-bottom: 20px;
   margin-top:0px;
 }
@@ -457,24 +483,28 @@ background-color: #62676c;
 
 .games {
   width: 100%;
-  padding:10px;
-  border-radius: 5px 5px 0px 0px;
-  border: 1px solid #ccc;
-  background: rgb(240, 217, 222);
   margin-bottom: 0px;
+  font-weight: bolder;
+  padding-top: 35px;
 
 }
 
 .addgames {
-  width: 40%;
-  padding:10px;
-  border-radius: 10px;
+  justify-content: center;
+  padding: 28px 20px 20px 100px;
+  width: 85%;
+}
+
+.addgames-box {
+  width: 100%;
+  margin-top: 50px;
+  margin-left: 15%;
+  padding: 0;
   border: 1px solid #ccc;
   background: rgb(149, 136, 165);
   margin-bottom: 0px;
-  margin-left:10%;
-  float: right;
   box-sizing: border-box;
+  border-radius: 5px;
 }
 
 .owned-games{
@@ -518,6 +548,10 @@ background-color: #62676c;
 }
 /* ==================== User cards on follower/following pages */
 
+.user-detail-box {
+  display:flex;
+  padding: 30px 150px 30px 20px;
+}
 .user-card {
   width: 100%;
   padding-bottom: 100%;
@@ -647,6 +681,33 @@ p.card-bio {
 }
 
 /* ============================== Signed in Home */
+.mid-text {
+  align-content: right;
+  text-align: right;
+  padding-right: 20px;
+  margin-right:50px;
+  margin-left: auto;
+}
+
+.home-text-bold {
+  font-weight: bold;
+}
+
+.right-text {
+  align-content: right;
+  text-align: right;
+  padding-right: 20px;
+  margin-right:0;
+  margin-left: auto;
+}
+
+.home-user-box {
+  display: flex;
+ border-radius: 15px;
+ width:100%;
+ margin-left: 70px;
+ padding: 5px;
+}
 
 #home-aside > .user-card {
   margin-top: 0;
@@ -683,9 +744,7 @@ p.card-bio {
   text-align: left;
 }
 
-.right-text {
-  text-align: right;
-}
+
 .title-word {
   text-decoration: none;
   font-size:36px;
@@ -718,7 +777,7 @@ p.card-bio {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #62676c;
+  background-color: #8b5972;
 }
 
 #messages.no-hover .message-area {

@@ -1,37 +1,51 @@
 {% extends 'base.html' %}
 {% block content %}
-  <div class="col-sm-9">
-    <div class="row">
-
-      <div class="following">
-        <h2> {{user.username}} </h2>
-        <h6 class="games"> Your Games </h6>
-        <div class="gamebox">
-        {% for game in user.boardgames %}
-          <div class="card-contents">
-              <p>{{ game.name}}</p>
-          </div>
-         {% endfor %}
-        </div>
+  <div class="addgames-box">
+  
+    <div class="addgames">
+      <div class="user-detail-box">
+        {% if user.image_url == 'none'%}
+            <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
+        {% else %}
+            <img class="user-img" src="{{user.image_url}}" alt="">
+        {% endif%}
+        <h3 class="games"> {{user.username}} </h3>
       </div>
-
-        {% for f in user.following %}
-        <div class="following">
-          <h5> {{f.username}}</h5>
-          <p>  <a href = "mailto: {{f.email}}">{{f.email}}</a> </p>
-          <div> {{f.location }}</div>
-         
-
-            <h6 class="games"> {{f.username}}'s games </h6>
-            <div class="gamebox">
-            {% for game in f.boardgames %}
-            <div>
-              {{ game.name }}
-            </div>
+        
+        <h5 class="games"> Your Games </h5>
+        <div class="gamebox">
+          <ul class="game-list">
+            {% for game in user.boardgames %}
+              <li class="owned-games"><span> {{game.name}}</span></li>
             {% endfor %}
-          </div>
+          </ul>
         </div>
-      {%  endfor %}
     </div>
-  </div>   
+</div>
+{% for f in user.following %}
+<div class="addgames-box">
+
+  <div class="addgames">
+    <div class="user-detail-box">
+        {% if f.image_url == 'none'%}
+        <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
+    {% else %}
+         <img class="user-img" src="{{f.image_url}}" alt="">
+      {% endif%}
+        <h3 class="games"> {{f.username}}</h3>
+        
+    </div>
+    <p>  <a href = "mailto: {{f.email}}">{{f.email}}</a> </p>
+        <div> {{f.location }}</div>
+        <h5 class="games"> {{f.username}}'s games </h5>
+            <div class="gamebox">
+              <ul class="game-list">
+                {% for game in user.boardgames %}
+                  <li class="owned-games"><span> {{game.name}}</span></li>
+                {% endfor %}
+              </ul>
+          </div>
+    </div>
+</div>
+{%  endfor %}  
 {% endblock %}

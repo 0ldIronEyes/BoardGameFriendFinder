@@ -1,34 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="main-container">
-      <div class = "box">
-        <div class="center-title"> <h2> Nearby Players </h2>  </div>
-        <ul class="list-group">
-          
+<div class="center-title"> Look for Nearby Players   </div>
+        <ul class="list-group"> 
             {% for userpair in userpairs %}
-                <div class="list-group-item"> 
+                <div class="list-group-item home-user-box"> 
                   {% if userpair[0].image_url == 'none'%}
-                  <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
+                  <a href ="/users/{{userpair[0].id}}"> <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" 
+                    alt=""></a>
                   {% else %}
-                  <img class="user-img" src="{{userpair[0].image_url}}" alt="">
+                  <a href ="/users/{{userpair[0].id}}"><img class="user-img" src="{{userpair[0].image_url}}" alt=""></a>
                   {% endif%}
 
-                  <span> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
-                  <div class = "right-text">  
-                       <span>Location : {{userpair[0].location }}</span>
-                      <div>
-                        Distance to you: 
-                        <span class="dist-span"> {{userpair[1]}}</span> 
-                      </div>
-                       
-                      </div>
-                      
-
+                  <span class="name-class"> <a href= "/users/{{userpair[0].id}}"> {{userpair[0].username}} </a></span>
+             
+                    <div class ="mid-text">
+                      <span class="home-text-bold"> <h5>Location</h5> </span> {{userpair[0].location }}
+                    </div>
+                    <div class="right-text">
+                      <span  class="home-text-bold"> <h5> Distance to you:</h5> </span> 
+                      <span> {{userpair[1]}}</span> 
+                    </div>
                 </div>
             {% endfor %}
-        </ul>
-      </div>       
-  </div>
+        </ul>      
+
  <script src="{{ url_for('static', filename='distance.js') }}"></script>
 
     

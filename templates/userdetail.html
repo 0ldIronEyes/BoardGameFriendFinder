@@ -1,32 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="col-sm-2">
-  <div class="row">
-    <div class="user-detail">
-       <h2> {{user.username}} </h2> 
-       {% if user.image_url == 'none'%}
-          <img class="right-text user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
-      {% else %}
-           <img class="right-text user-img" src="{{user.image_url}}" alt="">
-        {% endif%}
-       <div> <a href = "mailto: {{user.email}}">{{user.email}}</a> </div>
-       <div class="right-text">
-        <form method="POST" action="/users/{{user.id}}/follow">
-          <button class ="follow-butn">Follow</button>
-        </form>
-       </div>
-      </div>
 
-    <div class="user-detail">
-      <h4> {{user.username}}'s games </h4>
-      {% for game in user.boardgames %}  
-              <div class="card-contents">          
-                  <p>{{ game.name }}</p>
-              </div>
-      {% endfor %}
+<div class="col-md-7 col-lg-7">
+  <div class="addgames-box">
+    <div class="user-detail-box">
+        {% if user.image_url == 'none'%}
+           <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
+       {% else %}
+            <img class="user-img" src="{{user.image_url}}" alt="">
+         {% endif%}
+         <div>
+          <h2> {{user.username}} </h2> 
+          <div> <a href = "mailto: {{user.email}}">{{user.email}}</a> </div>
+          <form method="POST" action="/users/{{user.id}}/follow">
+            <button class ="follow-butn">Follow</button>
+          </form>
+         </div>
+         
+        <div class="right-text">
+          <h4 class="games"> {{user.username}}'s games </h4>
+          <div class="gamebox">
+            <ul class="game-list">
+              {% for game in user.boardgames %}
+                <li class="owned-games"><span> {{game.name}}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+    </div>
+    </div>
+  </div>
 
-    </div>
-    </div>
-    </div>
 {% endblock %}
