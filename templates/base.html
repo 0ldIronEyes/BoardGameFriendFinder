@@ -25,7 +25,7 @@
   >
 
 <div class="position-sticky ">
- <div class="list-group-flush mt-4">
+ <div class="list-group-flush">
    <a
       href="/"
       class="list-group-item list-group-item-action py-2 ripple"
@@ -38,24 +38,24 @@
     <div> <h3 class="sidebar-user"> Welcome,  {{ g.user.username}} </h3> <img scr = "{{g.user.image_url}}" alt=""></img></div>
     <a
     href="/users/add_games"
-    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
-    ><span class="list-item">My Games</span>
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple {% if request.path == '/users/add_games' %} side-active {% endif %}"
+    ><span class="list-item">My Games </span>
     </a>
     <a
     href="/users/{{g.user.id}}/following"
-    class="list-group-item  sidebar-item list-group-item-action py-3 ripple active"
+    class="list-group-item  sidebar-item list-group-item-action py-3 ripple {% if  request.path == '/users/' ~ g.user.id ~ '/following' %} side-active {% endif %}"
     >
     <span class="list-item"> Favorite Users</span>
     </a>
     <a
     href="/users/profile"
-    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple {% if request.path == '/users/profile' %} side-active {% endif %}"
     >
     <span class="list-item">Edit profile</span>
     </a>
     <a
     href="/logout"
-    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple "
     >
     <span class="list-item">Log Out</span>
     </a>
@@ -63,13 +63,13 @@
     {% if not g.user %}
     <a
     href="/signup"
-    class="list-group-item sidebar-item list-group-item-action py-3 ripple active"
+    class="list-group-item sidebar-item list-group-item-action py-3 ripple "
     >
     <span>Sign Up</span>
     </a>
     <a
     href="/login"
-    class="list-group-item  sidebar-item list-group-item-action py-3 ripple active"
+    class="list-group-item  sidebar-item list-group-item-action py-3 ripple "
     >
     <span>Log in</span>
     </a>

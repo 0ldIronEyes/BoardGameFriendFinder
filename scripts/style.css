@@ -33,6 +33,9 @@ body.error-404 {
   align-items: center;
 }
 
+.side-active {
+  background-color: #007bff;
+}
 .sidebar-bg {
   background-color: #11232e;
 }

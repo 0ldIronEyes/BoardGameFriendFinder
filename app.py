@@ -30,7 +30,6 @@ connect_db(app)
 @app.before_request
 def add_user_to_g():
     """if logged in add current user to Flask global"""
-
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
     else:
@@ -247,6 +246,4 @@ def remove_game(game_id):
     return redirect("/users/add_games")
     
 
-@app.route('/static/images/default-pic.png')
-def serve_image(filename):
-    return send_from_directory('static/images', filename)
+
