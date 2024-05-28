@@ -46,4 +46,3 @@ Clicking on one of the users will bring you to the comparison page where you can
 On this page you can see a list of games both you and the other user have in your collection and see if there are any you have in common. The user's email address will be displayed on this page if you choose to contact them.
 
 On the homepage, you can click on the edit profile button on the sidebar to edit your profile information.
-

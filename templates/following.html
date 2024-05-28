@@ -22,25 +22,25 @@
         </div>
     </div>
 </div>
-{% for f in user.following %}
+{% for follow in user.following %}
 <div class="addgames-box">
 
   <div class="addgames">
     <div class="user-detail-box">
-        {% if f.image_url == 'none'%}
+        {% if follow.image_url == 'none'%}
         <img class="user-img" src="{{url_for('static', filename='default-pic.png')}}" alt="">
     {% else %}
-         <img class="user-img" src="{{f.image_url}}" alt="">
+         <img class="user-img" src="{{follow.image_url}}" alt="">
       {% endif%}
-        <h3 class="games"> {{f.username}}</h3>
+        <h3 class="games"> {{follow.username}}</h3>
         
     </div>
-    <p>  <a href = "mailto: {{f.email}}">{{f.email}}</a> </p>
-        <div> {{f.location }}</div>
-        <h5 class="games"> {{f.username}}'s games </h5>
+    <p>  <a href = "mailto: {{follow.email}}">{{follow.email}}</a> </p>
+        <div> {{follow.location }}</div>
+        <h5 class="games"> {{follow.username}}'s games </h5>
             <div class="gamebox">
               <ul class="game-list">
-                {% for game in user.boardgames %}
+                {% for game in follow.boardgames %}
                   <li class="owned-games"><span> {{game.name}}</span></li>
                 {% endfor %}
               </ul>

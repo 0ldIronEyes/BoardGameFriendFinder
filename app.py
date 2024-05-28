@@ -2,15 +2,16 @@ import os
 
 from flask import Flask, render_template, request, flash, redirect, session, g, abort, jsonify
 import requests
+from decorators import login_required
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
-
+from calculation import Calculation
 from forms import UserAddForm, LoginForm, UserEditForm, AddGameForm
 from models import db, connect_db, User, BoardGame
 
 CURR_USER_KEY = "curr_user"
 
-api_key = 'AIzaSyBgMTRBvh9AE3_WRD_z-htK-rlgRAtDadI'
+API_KEY = 'AIzaSyBgMTRBvh9AE3_WRD_z-htK-rlgRAtDadI'
 app = Flask(__name__, static_folder='scripts')
 
 # Get DB_URI from environ variable (useful for production/testing) or,
@@ -40,6 +41,7 @@ def do_login(user):
     """log in user"""
 
     session[CURR_USER_KEY] = user.id
+
 
 def do_logout():
     """log in user"""
@@ -98,6 +100,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     """Handle logout of user."""
     do_logout()
@@ -114,86 +117,65 @@ def user_detail(userid):
 
 
 @app.route("/users/<int:userid>/follow", methods=["POST"])
+@login_required
 def toggle_follow(userid):
-    """follow user if logged in"""
-    if g.user:
-        user= g.user
-        followed_user = User.query.get_or_404(userid)
-        if followed_user in  g.user.following:
-            g.user.following.remove(followed_user)      
-        else:
-            user.following.append(followed_user)  
-        db.session.commit()
+    """follow user if logged in"""  
+    user= g.user
+    followed_user = User.query.get_or_404(userid)
+    if followed_user in  g.user.following:
+        g.user.following.remove(followed_user)      
+    else:
+        user.following.append(followed_user)  
+    db.session.commit()
     return redirect("/")
 
-def calculate_distance(origin, destination):
-        """calculates distance between two points using google distance api"""
-        origin_formatted=""
-        destination_formatted =""
-        if (origin):
-            origin_formatted = origin.replace(' ', '+')
-        if (destination):
-            destination_formatted = destination.replace(' ', '+')
-        url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin_formatted}&destinations={destination_formatted}&key={api_key}'
-        response = requests.get(url)
-        data = response.json()
-        try:
-            if data['status'] == "INVALID_REQUEST":
-                return "Unavailable"
-            distancetext = data['rows'][0]['elements'][0]['distance']['text']
-            distanceint = data['rows'][0]['elements'][0]['distance']['value']
-            distance = [distancetext,distanceint]
-            return distance
-        except KeyError:
-            return ['Unknown',999999999]
-
-
-
 @app.route('/users/profile', methods=["GET", "POST"])
+@login_required
 def profile():
     """Update profile for current user."""
-    if g.user:
-        user = g.user
-        form = UserEditForm(obj=user)
-        if form.validate_on_submit():
-            if User.authenticate(user.username, form.password.data):
-                user.username = form.username.data
-                user.email = form.email.data
-                user.location = form.location.data
-                user.image_url = form.image_url.data or "/static/images/default-pic.png"
-                db.session.commit()
-                flash("changes successful")
-                return redirect("/")
-            else:
-                flash("incorrect password")
-                return redirect("/")
-        else:
-            return render_template("/edit.html", user = user, form = form)
+    user = g.user
+    form = UserEditForm(obj=user)
+    if form.validate_on_submit():
+        existing_user = User.query.filter(User.username == form.username.data, User.id != user.id).first()
+        if existing_user:
+            form.username.errors.append("Username already taken")
+            return render_template("/edit.html", user=user, form=form)
+        user.username = form.username.data
+        user.email = form.email.data
+        user.location = form.location.data
+        user.image_url = form.image_url.data or "/static/images/default-pic.png"
+            
+        try:
+            db.session.commit()
+            flash("Changes successful")
+            return redirect("/")
+        except IntegrityError:
+            db.session.rollback()
+            form.username.errors.append("Username already taken")
+            return render_template("/edit.html", user=user, form=form)
     else:
-        return('/')
+        return render_template("/edit.html", user = user, form = form)
+
     
 
 
 @app.route('/')
 def homepage():
     """Show homepage:
-
-    - anon users: no messages
-    - logged in: 100 most recent messages of followed_users
     """
     if g.user:
         following =[f.id for f in g.user.following]
-        userinfo= []
+        user_info= []
         users = User.query.filter(User.id != g.user.id).all()
         for user in users:
-            distance = calculate_distance(g.user.location, user.location)
+            distance = Calculation.calculate_distance(g.user.location, g.user.location)
             try:
                 int_distance = int(distance[1])
             except ValueError:
                 int_distance = 999999999
-            userinfo.append([user, distance[0],int_distance])
-        sorteduserinfo = sorted(userinfo, key=lambda x: x[2])
-        return render_template('home.html',userpairs =  sorteduserinfo, users= users, following = following)
+            user_info.append([user, distance[0],int_distance])
+        sorted_user_info = sorted(user_info, key=lambda x: x[2])
+        return render_template('home.html',userpairs =  sorted_user_info, users= users, following = following)
 
     else:
         return render_template('home-anon.html')
@@ -201,36 +183,30 @@ def homepage():
 
 
 @app.route('/users/<int:user_id>/following')
+@login_required
 def show_following(user_id):
     """Show list of people this user is following."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-
     user = User.query.get_or_404(user_id)
     return render_template('following.html', user=user)  
 
 
 
 @app.route("/users/add_games", methods=["GET","POST"])
+@login_required
 def add_games():
     """See list of games and add or remove them"""
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
     form = AddGameForm()
     if form.validate_on_submit():
-        gamename = form.gamename.data
-        game = BoardGame.query.filter_by(name=gamename).first()
+        game_name = form.gamename.data
+        game = BoardGame.query.filter_by(name=game_name).first()
         if game is None:
-            bgame = BoardGame(name=gamename)
+            bgame = BoardGame(name=game_name)
             db.session.add(bgame)
             g.user.boardgames.append(bgame)
             db.session.commit()        
         else:
-            usergames = g.user.boardgames
-            if (game not in usergames):
+            user_games = g.user.boardgames
+            if (game not in user_games):
                 g.user.boardgames.append(game)
                 db.session.commit()     
         return redirect("/users/add_games")
@@ -238,6 +214,7 @@ def add_games():
 
 
 @app.route("/users/remove_game/<game_id>", methods=["POST"])
+@login_required
 def remove_game(game_id):
     """remove game"""
     game = BoardGame.query.get_or_404(game_id)
@@ -247,3 +224,5 @@ def remove_game(game_id):
     
 
 
+if __name__ == "__main__":
+    app.run(debug=True)
