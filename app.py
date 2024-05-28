@@ -10,8 +10,8 @@ from forms import UserAddForm, LoginForm, UserEditForm, AddGameForm
 from models import db, connect_db, User, BoardGame
 
 CURR_USER_KEY = "curr_user"
+api_key = 'AIzaSyBgMTRBvh9AE3_WRD_z-htK-rlgRAtDadI'
 
-API_KEY = 'AIzaSyBgMTRBvh9AE3_WRD_z-htK-rlgRAtDadI'
 app = Flask(__name__, static_folder='scripts')
 
 # Get DB_URI from environ variable (useful for production/testing) or,
@@ -157,7 +157,23 @@ def profile():
         return render_template("/edit.html", user = user, form = form)
 
     
-
+def calculate_distance(origin, destination):
+        """calculates distance between two points using google distance api"""
+        origin_formatted = origin.replace(' ', '+') if origin else ''
+        destination_formatted = destination.replace(' ', '+') if destination else ''
+        try:
+            url = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={origin_formatted}&destinations={destination_formatted}&key={api_key}'
+        except:
+            return ["unknown", 999999999]
+        response = requests.get(url)
+        data = response.json()
+        if data['status'] == "INVALID_REQUEST" or data['rows'][0]['elements'][0]['status'] == "NOT_FOUND":
+            return "Unavailable"
+        if not data['rows']:
+            return ['Unknown', 999999999]
+        distance_text = data['rows'][0]['elements'][0]['distance']['text']
+        distance_value = data['rows'][0]['elements'][0]['distance']['value']
+        return [distance_text, distance_value]
 
 @app.route('/')
 def homepage():
@@ -168,7 +184,10 @@ def homepage():
         user_info= []
         users = User.query.filter(User.id != g.user.id).all()
         for user in users:
-            distance = Calculation.calculate_distance(g.user.location, g.user.location)
+            destination = user.location
+            if not user.location:
+                destination = "unknown"
+            distance = calculate_distance(g.user.location, destination)
             try:
                 int_distance = int(distance[1])
             except ValueError:
